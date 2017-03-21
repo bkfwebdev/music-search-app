@@ -4,6 +4,8 @@
 // log result
 // GET https://api.spotify.com/v1/search
 
+var resultsDisplayed = false;
+
 function addListElement (albumTitle,albumArtist,albumArt){
 	 let newAlbum = document.createElement("li");
 	 let newDiv = document.createElement("div");
@@ -27,6 +29,7 @@ function addListElement (albumTitle,albumArtist,albumArt){
 } 
 
 function processData(searchResponseObject){
+if (resultsDisplayed === true){clearLastSearch();}
 console.log(searchResponseObject);
 var loopEnd = searchResponseObject.albums.items.length;
 for (index = 0; index < loopEnd; index ++){
@@ -35,6 +38,7 @@ let currentArtist = searchResponseObject.albums.items[index].artists[0].name;
 let currentImage = searchResponseObject.albums.items[index].images[0 ].url;
 addListElement(currentAlbum,currentArtist,currentImage);
 }
+resultsDisplayed = true;
 }
 
 function submitSearch (userInput){
@@ -68,6 +72,26 @@ $(".search-form").on("submit",function(event){
 // album-artist path searchResponseObject.albums.items["0"].artists["0"].name 
 // album-image path searchResponseObject.albums.items["0"].images["0"].url 
 
+function getTracks(albumID){
+	// GET https://api.spotify.com/v1/albums/{id}/tracks
+
+}
+
+function clearLastSearch (){
+	let currentSearch = $("li").not(".desc");
+	let maxIndex = currentSearch.length;
+	for (x = 0; x < maxIndex ; x++){
+		$(currentSearch[x]).remove();
+	}
+	resultsDisplayed = false;
+}
+
+function pageReset(){
+	clearLastSearch();
+		$(".desc").show();
+		}
+		
+function albumPage(){} 
 
 
 
