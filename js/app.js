@@ -5,6 +5,8 @@
 // GET https://api.spotify.com/v1/search
 
 var resultsDisplayed = false;
+var noAlbumsFound = false;
+var blankSearch = $(".desc");
 
 function addListElement (albumTitle,albumArtist,albumArt){
 	 let newAlbum = document.createElement("li");
@@ -13,6 +15,7 @@ function addListElement (albumTitle,albumArtist,albumArt){
 	 let albumTitleSpan  = document.createElement("span");
 	 let artistNameSpan = document.createElement("span");
 	 let albumList = document.getElementById("albums");
+	 if (resultsDisplayed === false){$(blankSearch).remove();}
 	newDiv.setAttribute("class","album-wrap");
 	newImage.setAttribute("class","album-art");
 	newImage.setAttribute("src",albumArt);
@@ -25,18 +28,22 @@ function addListElement (albumTitle,albumArtist,albumArt){
 	newAlbum.appendChild(albumTitleSpan);
 	newAlbum.appendChild(artistNameSpan);
 	albumList.appendChild(newAlbum);
-	$(".desc").hide();
 } 
 
 function processData(searchResponseObject){
 if (resultsDisplayed === true){clearLastSearch();}
 console.log(searchResponseObject);
 var loopEnd = searchResponseObject.albums.items.length;
+if (loopEnd === 0){
+	console.log("I got nothing for you son...");
+	iGotNothin($("#search").val());
+} else {
 for (index = 0; index < loopEnd; index ++){
 let currentAlbum = searchResponseObject.albums.items[index].name;
 let currentArtist = searchResponseObject.albums.items[index].artists[0].name;
 let currentImage = searchResponseObject.albums.items[index].images[0 ].url;
 addListElement(currentAlbum,currentArtist,currentImage);
+}
 }
 resultsDisplayed = true;
 }
@@ -67,15 +74,38 @@ $(".search-form").on("submit",function(event){
 	submitSearch(testval);
 	event.preventDefault();
 	})
+	
+getTracks();
+
+// track li loop
+// trackListData.items[0].name
+// trackListData.items[1].name etc
+
 
 // album-title path searchResponseObject.albums.items["0"].name
 // album-artist path searchResponseObject.albums.items["0"].artists["0"].name 
 // album-image path searchResponseObject.albums.items["0"].images["0"].url 
 
-function getTracks(albumID){
-	// GET https://api.spotify.com/v1/albums/{id}/tracks
 
+function getTracks(){
+	//.albums.items[0].id
+	//.albums.items[1].id
+	// etc
+	// GET https://api.spotify.com/v1/albums/3tQd5mwBtVyxCoEo4htGAV/tracks
+	let tracksURL = "https://api.spotify.com"
+	let albumID = "3ckt1jRTh6Q08fUvEePI7B";
+	let targetURL = tracksURL + "/v1/albums/" + albumID + "/tracks?";
+	console.log(targetURL);
+	$.get(targetURL,albumID,logData);
 }
+	
+	function logData(data){
+		let trackListData = data;
+		console.log(trackListData);
+	}
+
+
+function clickAlbumEvent (){}
 
 function clearLastSearch (){
 	let currentSearch = $("li").not(".desc");
@@ -83,6 +113,10 @@ function clearLastSearch (){
 	for (x = 0; x < maxIndex ; x++){
 		$(currentSearch[x]).remove();
 	}
+	if (noAlbumsFound === true)
+	{
+		$(".no-albums").remove();
+		}
 	resultsDisplayed = false;
 }
 
@@ -91,7 +125,18 @@ function pageReset(){
 		$(".desc").show();
 		}
 		
-function albumPage(){} 
+function albumPage(){}
+
+function iGotNothin(searchValue){
+	let noResults = document.createElement("li");
+	noResults.setAttribute("class","no-albums desc");
+	noResults.innerHTML = "<i class='material-icons icon-help'>help_outline</i>No albums found that match:"+searchValue+".</i>";
+	let myAnchor = document.getElementById("albums");
+	$(blankSearch).hide();
+	myAnchor.appendChild(noResults);
+	resultsDisplayed = true;
+	noAlbumsFound = true;
+}
 
 
 
