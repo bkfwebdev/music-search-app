@@ -1,4 +1,4 @@
-// Bryant Feld TechDegree Project 5
+ // Bryant Feld TechDegree Project 5
 //----------------------------------
 
 // Variables
@@ -33,7 +33,7 @@ function addListElement (albumTitle,albumArtist,albumArt){
 } 
 
 function iGotNothin(searchValue){
-// alerts the user than there were no search results
+// alerts the user that there were no search results
 	let noResults = document.createElement("li");
 	noResults.setAttribute("class","no-albums desc");
 	noResults.innerHTML = "<i class='material-icons icon-help'>help_outline</i>No albums found that match:"+searchValue+".</i>";
@@ -100,5 +100,3 @@ $(".search-form").on("submit",function(event){
 	submitSearch(testval);
 	event.preventDefault();
 	});
-
-		
